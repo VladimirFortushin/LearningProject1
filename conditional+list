@@ -1,0 +1,14 @@
+<div th:if="${personBookList.isEmpty()}">
+    <p>This person haven't taken any book yet</p>
+    <hr/>
+</div>
+
+<div th:if="${!personBookList.isEmpty()}">
+    <hr/>
+    <b>Books:</b>
+    <br/>
+    <table th:each="book : ${personBookList}">
+        <tr th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">book</tr>
+    </table>
+    
+</div>
