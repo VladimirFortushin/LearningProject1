@@ -64,8 +64,5 @@ public class BookDAO {
         jdbcTemplate.update("update book set person_id = null where book_id=?", book_id);
     }
 
-    public void assignBook(int person_id, int book_id) {
-        jdbcTemplate.update("update book set person_id = ? where book_id=?",
-                person_id, book_id);
-    }
+
 }
