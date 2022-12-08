@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.book.Book;
 import com.example.demo.dao.BookDAO;
+import com.example.demo.dao.PersonDAO;
+import com.example.demo.people.Person;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/books")
 public class BookController {
 
+    private final PersonDAO personDAO;
     private final BookDAO bookDAO;
     @Autowired
-    public BookController(BookDAO bookDAO) {
+    public BookController(PersonDAO personDAO, BookDAO bookDAO){
+        this.personDAO = personDAO;
         this.bookDAO = bookDAO;
     }
 
@@ -27,8 +31,13 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-        public String showBook(@PathVariable("id") int id, @NotNull Model model){
+        public String showBook(@PathVariable("id") int id, @NotNull Model model, @ModelAttribute("person") Person person){
+
         model.addAttribute("book", bookDAO.showBook(id));
+        model.addAttribute("bookOwner", personDAO.showBookOwner(id));
+        model.addAttribute("peopleList", personDAO.showListOfPeople());
+
+
         return "/book/show-book";
     }
 
@@ -59,7 +68,23 @@ public class BookController {
 
         if(bindingResult.hasErrors()){return "/book/edit-book";}
         bookDAO.edit(id, book);
-        return "redirect:/books";    }
+        return "redirect:/books";
+    }
+
+    @GetMapping("non-occupied")
+    public String listOfNonOccupiedBooks(Model model){
+        model.addAttribute("nonOccupiedBooks", bookDAO.showListOfNonOccupiedBooks());
+        return "/book/bookList";
+    }
+
+    @PostMapping("/{id}/release")
+    public String releaseBook(@PathVariable int id){
+
+        bookDAO.release(id);
+        return "redirect:/books/{id}";
+    }
+
+
 
   @PostMapping("/{id}/remove")
   public String deleteBook(@PathVariable int id){

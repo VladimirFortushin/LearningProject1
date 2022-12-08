@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.dao.BookDAO;
 import com.example.demo.dao.PersonDAO;
 import com.example.demo.people.Person;
 import jakarta.validation.Valid;
@@ -16,22 +17,28 @@ import org.springframework.web.bind.annotation.*;
 public class PeopleController {
 
     private final PersonDAO personDAO;
+    private final BookDAO bookDAO;
     @Autowired
-    public PeopleController(PersonDAO personDAO){
+    public PeopleController(PersonDAO personDAO, BookDAO bookDAO){
         this.personDAO = personDAO;
+        this.bookDAO = bookDAO;
     }
 
     @GetMapping
     public String listOfPeople(Model model){
         model.addAttribute("peopleList", personDAO.showListOfPeople());
+
         return "/people/peopleList";
     }
 
     @GetMapping("/{id}")
     public String showPerson(@PathVariable("id") int id, @NotNull Model model){
         model.addAttribute("person", personDAO.showPerson(id));
+        model.addAttribute("book", bookDAO.showBook(id));
+        model.addAttribute("personBookList", bookDAO.showListOfPersonBooks(id));
         return "/people/show-person";
     }
+
 
     @GetMapping("/new")
     public String newPerson(@ModelAttribute("person") Person person){
@@ -68,6 +75,13 @@ public class PeopleController {
         personDAO.deletePerson(id);
 
         return "redirect:/people";
+    }
+
+    @PostMapping("/{id}/assign")
+    public String assignBook(@PathVariable int id, @ModelAttribute("person") Person person){
+
+        personDAO.assignBook(person.getId(), id);
+        return "redirect:/books/{id}";
     }
 
 

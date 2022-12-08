@@ -16,7 +16,8 @@ public class BookMapper<B> implements RowMapper<Book> {
                 rs.getInt("book_id"),
                 rs.getString("name"),
                 rs.getString("author"),
-                rs.getInt("year")
+                rs.getInt("year"),
+                rs.getInt("person_id")
         );
     }
 }

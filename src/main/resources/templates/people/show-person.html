@@ -9,10 +9,31 @@
 <p th:text="${person.getYearOfBirth()}">VALUE</p>
 <p th:text="${person.getId()}">VALUE</p>
 
-<a th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit</a>
-<form th:method ="DELETE" th:action="@{/people/{id}/remove(id=${person.getId()})}">
-    <input type="submit" value="Delete"/>
 
+<div th:if="${personBookList.isEmpty()}">
+    <p>This person hasn't taken any book yet</p>
+    <hr/>
+</div>
+
+<div th:if="${!personBookList.isEmpty()}">
+    <hr/>
+    <b>Books:</b>
+    <br/>
+    <table th:each="book : ${personBookList}">
+        <tr th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">book</tr>
+    </table>
+
+</div>
+
+<br/>
+
+
+
+<a th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit person</a>
+    <br/>
+<form th:method ="DELETE" th:action="@{/people/{id}/remove(id=${person.getId()})}">
+    <input type="submit" value="Delete person"/>
 </form>
+
 </body>
 </html>
